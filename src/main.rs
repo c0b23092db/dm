@@ -15,14 +15,14 @@ fn main() -> ExitCode{
     } else {
         let input = &args[1];
 
-        if input == "dir" && input == "ls" {
+        if input == "dir" || input == "ls" {
             list_files(downloads_path);
             return ExitCode::SUCCESS;
         }
         match input.parse::<i32>() {
             Ok(num) => move_files(downloads_path, num),
             Err(_) => {
-                eprintln!("Invalid input: Please enter a number or 'dir'");
+                eprintln!("Invalid input: Please enter a number or dir/ls");
                 return ExitCode::FAILURE;
             }
         }
