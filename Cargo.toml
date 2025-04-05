@@ -1,7 +1,13 @@
 [package]
 name = "dm"
-version = "1.0.1"
+version = "1.0.2"
 edition = "2024"
+
+[profile.release]
+lto = true
+opt-level = "s"
+codegen-units = 1
+strip = "symbols"
 
 [dependencies]
 dirs = "6.0.0"

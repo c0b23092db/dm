@@ -7,8 +7,11 @@ use dirs::download_dir;
 use crossterm::event::{self,Event};
 
 fn main() -> ExitCode{
+    let Some(downloads_path) = download_dir() else {
+        println!("Failed to get Downloads Directory");
+        return ExitCode::FAILURE;
+    };
     let args: Vec<String> = args().collect();
-    let downloads_path = download_dir().expect("Failed to get Downloads Directory");
 
     if args.len() == 1 {
         move_files(downloads_path, 1);
@@ -59,10 +62,16 @@ fn move_files(directory_path: PathBuf, count: i32) {
         println!("移動するファイルがありません。");
         return;
     }
-    let current_dir = current_dir().expect("Failed to get Current Directory");
+    let current_dir = match current_dir() {
+        Ok(dir) => dir,
+        Err(_) => {
+            eprintln!("Failed to get Current Directory");
+            return;
+        }
+    };
     let move_count = if count == 0 { files.len() } else { count.abs() as usize };
     for file in files.into_iter().take(move_count) {
-        if let Err(e) = rename(&file, &current_dir.join(file.file_name().expect("Failed to get File"))){
+        if let Err(e) = rename(&file, &current_dir.join(file.file_name().unwrap())) {
             eprintln!("Failed to move {:?} : {}", file, e);
         }
     }
