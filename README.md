@@ -1,10 +1,10 @@
-# Command Line Tool : Moving File and Folder in Current Directory from Download Directory
+# Command Line Interface : Moving File and Folder in Current Directory from Download Directory
 
 ```batch
 dm [sum/option]
 ```
 
-ダウンロードフォルダにあるファイルを現在のフォルダに移動させるコマンドラインツールです。
+ダウンロードフォルダにあるファイルを現在のフォルダに移動させるコマンドラインインターフェースツールです。
 
 ## 実行環境
 
