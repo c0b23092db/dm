@@ -1,14 +1,23 @@
 [package]
-name = "dm"
-version = "1.0.2"
+name = "CommandLineTool-moving_items_from_downloadpath_to_currentpath"
+version = "1.0.3"
 edition = "2024"
+authors = ["learner"]
+description = "Command Line Tool : Moving File and Folder from the Download Directory to Current Directory"
+license = "MIT"
+repository = "https://github.com/c0b23092db/dm"
+
+[[bin]]
+name = "dm"
+path = "src/main.rs"
 
 [profile.release]
 lto = true
 opt-level = "s"
+debug = false
 codegen-units = 1
 strip = "symbols"
 
 [dependencies]
 dirs = "6.0.0"
-crossterm = "0.28.1"
+crossterm = {version = "0.28.1", features = ["events"]}
