@@ -1,10 +1,10 @@
-# Command Line Tool : Moving File and Folder in Current Directory from Download Directory
+# Command Line Interface : Moving File and Folder in Current Directory from Download Directory
 
 ```batch
 dm [sum] | [option]
 ```
 
-ダウンロードフォルダにあるファイルを現在のフォルダに移動させるコマンドラインツールです。
+ダウンロードディレクトリにあるファイルを現在いるカレントディレクトリに移動させるコマンドラインインターフェースのツールです。
 
 ## インストール
 
@@ -53,19 +53,19 @@ dm
 更新日付が新しいファイルを一つ移動させる。
 
 ```batch
-dm 3
+dm
 ```
 
 更新日付が新しいファイルを三つ移動させる。
 
 ```batch
-dm -5
+dm 3
 ```
 
 更新日付が古いファイルを五つ移動させる。
 
 ```batch
-dm dir
+dm -5
 ```
 
 ダウンロードフォルダにあるファイルを一覧表示する。
@@ -75,6 +75,10 @@ dm help
 ```
 
 ヘルプを表示する。
+
+```batch
+dm dir
+```
 
 ## 今後について
 
