@@ -71,13 +71,13 @@ dm -5
 ダウンロードフォルダにあるファイルを一覧表示する。
 
 ```batch
-dm help
+dm dir
 ```
 
 ヘルプを表示する。
 
 ```batch
-dm dir
+dm help
 ```
 
 ## 今後について
