@@ -22,8 +22,8 @@ fn main() -> ExitCode {
     if input == "help" {
         println!("Usage: dm [sum | help | dir/ls]");
         println!("    sum     : 移動するファイルの数");
-        println!("    help    : ヘルプを表示");
         println!("    dir/ls  : 移動するファイルの一覧を表示");
+        println!("    help    : ヘルプを表示");
         return ExitCode::SUCCESS;
     }
     if input == "dir" || input == "ls" {
@@ -92,7 +92,7 @@ fn pause() -> Result<(), Error> {
     loop {
         if event::poll(std::time::Duration::from_millis(1000))? {
             if let Event::Key(_) = event::read()? {
-                Ok(());
+                return Ok(());
             }
         }
     }
