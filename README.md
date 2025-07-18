@@ -83,4 +83,4 @@ dm help
 - いかた゚ : [](url)
 
 ## ライセンス
-[MIT Licence](./LICENCE.md) / <http://opensource.org/licenses/MIT>
+[MIT License](./LICENSE.md) / <http://opensource.org/licenses/MIT>
