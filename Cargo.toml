@@ -1,9 +1,9 @@
 [package]
-name = "CommandLineTool-moving_items_from_downloadpath_to_currentpath"
+name = "CommandLineTool_moving-file-and-folder-in-downloaddirectory-at-currentdirectory"
 version = "1.0.3"
 edition = "2024"
-authors = ["learner"]
-description = "Command Line Tool : Moving File and Folder from the Download Directory to Current Directory"
+description = "Command Line Tool : Moving File and Folder in Download Directory at Current Directory"
+authors = ["IKATA゚ <>"]
 license = "MIT"
 repository = "https://github.com/c0b23092db/dm"
 
