@@ -1,5 +1,5 @@
 [package]
-name = "CommandLineTool_moving-file-and-folder-in-downloaddirectory-at-currentdirectory"
+name = "download_mover"
 version = "1.0.3"
 edition = "2024"
 description = "Command Line Tool : Moving File and Folder in Download Directory at Current Directory"
