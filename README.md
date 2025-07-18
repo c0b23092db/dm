@@ -23,6 +23,10 @@ Windows - https://github.com/c0b23092db/dm/releases/download/v1.0.3/dm.exe
 
 ### cargo
 ```batch
+cargo install download_mover
+```
+
+```batch
 cargo install --git https://github.com/c0b23092db/dm
 ```
 
