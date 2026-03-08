@@ -1,99 +1,56 @@
-use std::env::{args,current_dir};
-use std::fs::{read_dir,rename};
-use std::io::Error;
-use std::process::ExitCode;
-use std::path::PathBuf;
+mod core;
+use core::{show_files_in_directory,move_files,move_specified_file};
+
+use std::env::current_dir;
+use clap::Parser;
 use dirs::download_dir;
-use crossterm::event::{self,Event};
 
-fn main() -> ExitCode {
-    let Some(downloads_path) = download_dir() else {
-        eprintln!("Failed to get path of the Downloads Directory");
-        return ExitCode::FAILURE;
-    };
-
-    let args: Vec<String> = args().collect();
-
-    if args.len() == 1 {
-        move_files(downloads_path,1);
-        return ExitCode::SUCCESS;
-    }
-    let input = &args[1];
-    if input == "help" {
-        println!("Usage: dm [sum | help | dir/ls]");
-        println!("    sum     : 移動するファイルの数");
-        println!("    dir/ls  : 移動するファイルの一覧を表示");
-        println!("    help    : ヘルプを表示");
-        return ExitCode::SUCCESS;
-    }
-    if input == "dir" || input == "ls" {
-        show_list_files(downloads_path);
-        return ExitCode::SUCCESS;
-    }
-    if let Ok(num) = input.parse::<i32>() {
-        move_files(downloads_path, num);
-        return ExitCode::SUCCESS;
-    }
-
-    println!("Invalid input : Please enter help, a number or dir/ls");
-    return ExitCode::SUCCESS;
+#[derive(Parser, Debug)]
+#[command(version,about,
+    arg_required_else_help = false,
+    allow_negative_numbers = true
+)]
+struct Args {
+    /// Number of files being moved
+    #[arg(value_name = "count")]
+    count:Option<i32>,
+    /// Move files at the specified number
+    #[arg(short, long)]
+    specify:bool,
+    /// Check files in the download directory
+    #[arg(short,long,
+        visible_aliases = ["list","dir"],
+    )]
+    ls:bool,
 }
 
-fn get_vecfiles_modified(directory_path:PathBuf, reverse_modified:bool) -> Vec<PathBuf>{
-    let mut files:Vec<PathBuf> = match read_dir(&directory_path) {
-        Ok(entries) => entries.filter_map(Result::ok).map(|e| e.path()).collect(),
-        Err(_) => {
-            eprintln!("Failed to read directory : {}",directory_path.display());
-            return vec![];
-        }
-    };
-    files.sort_by_key(|path| path.metadata().ok().and_then(|path| path.modified().ok()));
-    if reverse_modified { files.reverse() } // 最新のファイルに並び替える
-    return files;
-}
-
-fn show_list_files(directory_path:PathBuf) {
-    let files = get_vecfiles_modified(directory_path,true);
-    let width:usize = files.len().to_string().len();
-    for (index,file) in files.iter().enumerate() {
-        match file.file_name() {
-            Some(name) =>   println!("[{:>width$}] {}",
-                            index + 1,name.to_string_lossy(),width = width),
-            None => eprintln!("[Warning] Failed - {:?}", file),
-        }
-    }
-    pause().expect("Failed to input Key");
-}
-
-fn move_files(directory_path: PathBuf, count: i32) {
-    let files = get_vecfiles_modified(directory_path,0 <= count);
-    if files.is_empty() {
-        println!("移動するファイルがありません。");
+fn main(){
+    let Ok(current_dir) = current_dir() else {
+        eprintln!("Failed to get path of the Current Directory");
         return;
-    }
-    let current_dir = match current_dir() {
-        Ok(dir) => dir,
-        Err(_) => {
-            eprintln!("Failed to get Current Directory");
-            return;
-        }
     };
-    let move_count = if count == 0 { files.len() } else { count.unsigned_abs() as usize };
-    for file in files.into_iter().take(move_count) {
-        if let Err(e) = rename(&file, current_dir.join(file.file_name().unwrap())) {
-            eprintln!("Failed to move {:?} : {}", file, e);
-        }
-    }
-    println!("{}個移動しました。",move_count);
-}
-
-fn pause() -> Result<(), Error> {
-    // println!("続行するには何かキーを押してください...");
-    loop {
-        if event::poll(std::time::Duration::from_millis(1000))? {
-            if let Event::Key(_) = event::read()? {
-                return Ok(());
+    let Some(download_path) = download_dir() else {
+        eprintln!("Failed to get path of the Downloads Directory");
+        return;
+    };
+    let args = Args::parse();
+    if args.ls { // `dm -l`のように`-l`オプションが指定された場合の処理 //
+        show_files_in_directory(download_path);
+    } else if args.specify { // `dm -s 5`のように数値とともに`-s`オプションが指定された場合の処理 //
+        if let Some(index) = args.count {
+            if 0 < index {
+                move_specified_file(download_path, current_dir, index as usize);
+            } else {
+                eprintln!("Index must be a positive number");
             }
+        } else {
+            eprintln!("Please specify a file number with -s option");
         }
+    } else if args.count.is_none() { // `dm`コマンドのみで実行された場合の処理 //
+        move_files(download_path,current_dir,1);
+    }  else if args.count == Some(0) { // `dm 0`で指定された場合の処理 //
+        move_files(download_path,current_dir,0);
+    } else if let Some(count) = args.count { // `dm 5`のように数値が指定された場合の処理 //
+        move_files(download_path,current_dir,count);
     }
 }

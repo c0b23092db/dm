@@ -1,11 +1,8 @@
-# Command Line Tool : Moving File and Folder in Download Directory at Current Directory
-```batch
+# Download Mover
+```bash
 dm.exe
 ```
-(*^^)v＜ダウンロードディレクトリにあるファイルとディレクトリをカレントディレクトリに移動させるコマンドラインツールです。
-
-## 概要
-- ダウンロードディレクトリからカレントディレクトリへファイルを移動
+**ダウンロードディレクトリにあるファイルとディレクトリを、カレントディレクトリに移動させるCLI**
 
 ## 実行環境
 
@@ -18,73 +15,77 @@ dm.exe
 
 ## インストール
 
-### バイナリ
-Windows - https://github.com/c0b23092db/dm/releases/download/v1.0.3/dm.exe
-
 ### cargo
-```batch
+```bash
 cargo install download_mover
 ```
 
-```batch
+```bash
 cargo install --git https://github.com/c0b23092db/dm
 ```
 
+### バイナリ
+Windows - https://github.com/c0b23092db/dm/releases/download/v1.1.1/dm.exe
 
 ## 使用方法
 ```
-Usage: dm [sum | help | dir/ls]
-    sum     : 移動するファイルの数
-    dir/ls  : 移動するファイルの一覧を表示
-    help    : ヘルプを表示
+~> dm -h
+CLI: Moving File and Folder in Download Directory at Current Directory
+
+Usage: dm.exe [OPTIONS] [count]
+
+Arguments:
+  [count]  Number of files being moved
+
+Options:
+  -s, --specify  Move files at the specified number
+  -l, --ls       Check files in the download directory [aliases: --list, --dir]
+  -h, --help     Print help
+  -V, --version  Print version
 ```
 
-**`[sum]`**
-- 指定した数値分、更新日が新しいファイルを移動させる。
-- 負の数を指定すると、更新日が古いファイルを移動させる。
-- 0を指定すると、すべてのファイルを移動させる。
+**`[count]`**
+- 正の数: 更新日が新しいファイルを移動させる
+- 負の数: 更新日が古いファイルを移動させる
+- 0を指定: すべてのファイルを移動させる
 
 **`[option]`**
-
-- `help`
+- `-s` or `--specify`
+  指定した場所のファイルを移動する
+- `-l` or `--ls` or `--list` or `--dir`
+  ダウンロードディレクトリにあるファイルをリスト形式で表示する。
+- `-h` or `--help`
   ヘルプを表示する。
-
-- `dir` or `ls`
-  ダウンロードフォルダにあるファイルを一覧で表示する。
 
 ### 例
 
 更新日付が新しいファイルを一つ移動させる。
-```batch
+```bash
 dm
 ```
 
 更新日付が新しいファイルを三つ移動させる。
-```batch
+```bash
 dm 3
 ```
 
 更新日付が古いファイルを五つ移動させる。
-```batch
+```bash
 dm -5
 ```
 
+更新日付が新しい順で三番目のファイルを移動させる。
+```bash
+dm -s 3
+```
+
 ダウンロードフォルダにあるファイルを一覧表示する。
-```batch
-dm dir
+```bash
+dm -l
 ```
-
-ヘルプを表示する。
-```batch
-dm help
-```
-
-## 実装予定
-- [x] バイナリを配布する
-- [ ] clapを使う
 
 ## 開発者
-- いかた゚ : [](url)
+- ikata
 
 ## ライセンス
-[MIT License](./LICENSE.md) / <http://opensource.org/licenses/MIT>
+[MIT License](./LICENSE) / <http://opensource.org/licenses/MIT>

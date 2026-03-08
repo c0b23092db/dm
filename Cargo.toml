@@ -1,9 +1,9 @@
 [package]
 name = "download_mover"
-version = "1.0.3"
+version = "1.1.1"
 edition = "2024"
-description = "Command Line Tool : Moving File and Folder in Download Directory at Current Directory"
-authors = ["IKATA゚ <>"]
+description = "CLI: Moving File and Folder in Download Directory at Current Directory"
+authors = ["ikata"]
 license = "MIT"
 repository = "https://github.com/c0b23092db/dm"
 
@@ -20,4 +20,4 @@ strip = "symbols"
 
 [dependencies]
 dirs = "6.0.0"
-crossterm = {version = "0.28.1", features = ["events"]}
+clap = { version = "4.5.60", features = ["derive"] }
