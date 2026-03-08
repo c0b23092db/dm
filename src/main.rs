@@ -2,7 +2,7 @@ mod core;
 use core::{show_files_in_directory,move_files,move_specified_file};
 
 use std::env::current_dir;
-use clap::Parser;
+use clap::{Parser, Subcommand};
 use dirs::download_dir;
 
 #[derive(Parser, Debug)]
@@ -17,11 +17,16 @@ struct Args {
     /// Move files at the specified number
     #[arg(short, long)]
     specify:bool,
+    /// Subcommands for additional functionalities
+    #[command(subcommand)]
+    command: Option<Command>,
+}
+
+#[derive(Subcommand, Debug)]
+enum Command {
     /// Check files in the download directory
-    #[arg(short,long,
-        visible_aliases = ["list","dir"],
-    )]
-    ls:bool,
+    #[command(alias = "list", alias = "dir")]
+    Ls,
 }
 
 fn main(){
@@ -34,9 +39,9 @@ fn main(){
         return;
     };
     let args = Args::parse();
-    if args.ls { // `dm -l`のように`-l`オプションが指定された場合の処理 //
+    if matches!(args.command, Some(Command::Ls)) { // `ls`,`list`,`dir`が指定された場合 //
         show_files_in_directory(download_path);
-    } else if args.specify { // `dm -s 5`のように数値とともに`-s`オプションが指定された場合の処理 //
+    } else if args.specify { // `-s`が指定された場合 //
         if let Some(index) = args.count {
             if 0 < index {
                 move_specified_file(download_path, current_dir, index as usize);
@@ -46,11 +51,11 @@ fn main(){
         } else {
             eprintln!("Please specify a file number with -s option");
         }
-    } else if args.count.is_none() { // `dm`コマンドのみで実行された場合の処理 //
+    } else if args.count.is_none() { // `dm`が実行された場合 //
         move_files(download_path,current_dir,1);
-    }  else if args.count == Some(0) { // `dm 0`で指定された場合の処理 //
+    }  else if args.count == Some(0) { // `dm 0`が実行された場合 //
         move_files(download_path,current_dir,0);
-    } else if let Some(count) = args.count { // `dm 5`のように数値が指定された場合の処理 //
+    } else if let Some(count) = args.count { // `dm 5`のように数値が指定された場合 //
         move_files(download_path,current_dir,count);
     }
 }

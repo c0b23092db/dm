@@ -25,37 +25,45 @@ cargo install --git https://github.com/c0b23092db/dm
 ```
 
 ### バイナリ
-Windows - https://github.com/c0b23092db/dm/releases/download/v1.1.1/dm.exe
+Windows - https://github.com/c0b23092db/dm/releases/download/v1.1.2/dm.exe
 
 ## 使用方法
 ```
-~> dm -h
+~> dm help
 CLI: Moving File and Folder in Download Directory at Current Directory
 
-Usage: dm.exe [OPTIONS] [count]
+Usage: dm.exe [OPTIONS] [count] [COMMAND]
+
+Commands:
+  ls    Check files in the download directory
+  help  Print this message or the help of the given subcommand(s)
 
 Arguments:
   [count]  Number of files being moved
 
 Options:
   -s, --specify  Move files at the specified number
-  -l, --ls       Check files in the download directory [aliases: --list, --dir]
   -h, --help     Print help
   -V, --version  Print version
 ```
 
+### Arguments
 **`[count]`**
 - 正の数: 更新日が新しいファイルを移動させる
 - 負の数: 更新日が古いファイルを移動させる
 - 0を指定: すべてのファイルを移動させる
 
-**`[option]`**
-- `-s` or `--specify`
-  指定した場所のファイルを移動する
-- `-l` or `--ls` or `--list` or `--dir`
+### Commands
+- `ls`, `list`, `dir`
   ダウンロードディレクトリにあるファイルをリスト形式で表示する。
-- `-h` or `--help`
+
+### Options
+- `-s`, `--specify`
+  指定した場所のファイルを移動する
+- `-h`, `--help`
   ヘルプを表示する。
+- `-V`, `--version`
+  バージョンを表示する。
 
 ### 例
 
@@ -81,7 +89,7 @@ dm -s 3
 
 ダウンロードフォルダにあるファイルを一覧表示する。
 ```bash
-dm -l
+dm ls
 ```
 
 ## 開発者
