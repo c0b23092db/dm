@@ -38,13 +38,43 @@ pub fn move_specified_file(from: PathBuf, to: PathBuf, index: usize) {
         return;
     }
     let file = &files[index - 1];
-    rename(&file, to.join(file.file_name().expect("Failed to File name"))).unwrap_or_else(|err| {
+    rename(file, to.join(file.file_name().expect("Failed to File name"))).unwrap_or_else(|err| {
         eprintln!("Failed to move {:?} : {}", file, err);
     });
 }
 
+/// ファイルを削除する関数
+pub fn remove_files(from: PathBuf, count: i32) {
+    let files = get_vecfiles_modified(from,0 <= count);
+    if files.is_empty() {
+        return;
+    }
+    let remove_count = if count == 0 { files.len() } else { count.unsigned_abs() as usize };
+    match trash::delete_all(files.into_iter().take(remove_count)) {
+        Ok(_) => (),
+        Err(err) => eprintln!("Failed to remove files: {}", err),
+    };
+}
+
+/// 指定した番号のファイルを削除する関数
+pub fn remove_specified_file(from: PathBuf, index: usize) {
+    let files = get_vecfiles_modified(from, true);
+    if files.is_empty() {
+        return;
+    }
+    if index == 0 || files.len() < index {
+        eprintln!("Invalid index: {}. Valid range: 1-{}", index, files.len());
+        return;
+    }
+    let file = &files[index - 1];
+    match trash::delete(file) {
+        Ok(_) => (),
+        Err(err) => eprintln!("Failed to remove {:?} : {}", file, err),
+    };
+}
+
 /// ファイルを更新順に取得する関数
-pub fn get_vecfiles_modified(directory_path:PathBuf, reverse_modified:bool) -> Vec<PathBuf> {
+fn get_vecfiles_modified(directory_path:PathBuf, reverse_modified:bool) -> Vec<PathBuf> {
     let mut files:Vec<PathBuf> = match read_dir(&directory_path) {
         Ok(entries) => entries.filter_map(Result::ok).map(|e| e.path()).collect(),
         Err(_) => {

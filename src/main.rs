@@ -1,5 +1,5 @@
 mod core;
-use core::{show_files_in_directory,move_files,move_specified_file};
+use core::{show_files_in_directory,move_files,move_specified_file,remove_files,remove_specified_file};
 
 use std::env::current_dir;
 use clap::{Parser, Subcommand};
@@ -27,6 +27,20 @@ enum Command {
     /// Check files in the download directory
     #[command(alias = "list", alias = "dir")]
     Ls,
+    /// Remove files in the download directory
+    #[command(
+        alias = "rm",
+        arg_required_else_help = false,
+        allow_negative_numbers = true
+    )]
+    Remove{
+        /// Number of files being removed
+        #[arg(value_name = "count")]
+        count:Option<i32>,
+        /// Remove files at the specified number
+        #[arg(short, long)]
+        specify:bool,
+    },
     /// Get Path of the download directory
     Path,
 }
@@ -45,6 +59,24 @@ fn main(){
         show_files_in_directory(download_path);
     } else if matches!(args.command, Some(Command::Path)) { // `path`が指定された場合 //
         println!("{}", download_path.display());
+    } else if let Some(Command::Remove { count, specify }) = args.command { // `rm`が指定された場合 //
+        if specify {
+            if let Some(index) = count {
+                if 0 < index {
+                    remove_specified_file(download_path, index as usize);
+                } else {
+                    eprintln!("Index must be a positive number");
+                }
+            } else {
+                eprintln!("Please specify a file number with -s option");
+            }
+        } else if count.is_none() { // `rm`が実行された場合 //
+            remove_files(download_path,1);
+        } else if count == Some(0) { // `rm 0`が実行された場合 //
+            remove_files(download_path,0);
+        } else if let Some(count) = count { // `rm 5`のように数値が指定された場合 //
+            remove_files(download_path,count);
+        }
     } else if args.specify { // `-s`が指定された場合 //
         if let Some(index) = args.count {
             if 0 < index {
