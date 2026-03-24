@@ -17,17 +17,20 @@ jobs:
         env:
           COMMIT_MSG: ${{ github.event.head_commit.message }}
         run: |
-          echo "Commit message: $COMMIT_MSG"
-          # 「🚀：Version~.~.~ -> Version~.~.~」パターンを検出
-          if echo "$COMMIT_MSG" | grep -qP '🚀：Version\d+\.\d+\.\d+ -> Version\d+\.\d+\.\d+'; then
-            VERSION=$(echo "$COMMIT_MSG" | grep -oP '-> Version\K\d+\.\d+\.\d+')
-            echo "should_release=true" >> $GITHUB_OUTPUT
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
-            echo "Detected release version: $VERSION"
-          else
-            echo "should_release=false" >> $GITHUB_OUTPUT
-            echo "No release trigger found."
-          fi
+          python3 - <<'PYEOF'
+          import re, os, sys
+          msg = os.environ.get("COMMIT_MSG", "")
+          print(f"Commit message: {msg}")
+          m = re.search(r'\U0001F680\uff1aVersion\d+\.\d+\.\d+ -> Version(\d+\.\d+\.\d+)', msg)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              if m:
+                  f.write(f"should_release=true\n")
+                  f.write(f"version={m.group(1)}\n")
+                  print(f"Detected release version: {m.group(1)}")
+              else:
+                  f.write("should_release=false\n")
+                  print("No release trigger found.")
+          PYEOF
 
   build:
     needs: check-commit
@@ -60,7 +63,7 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
-      - name: Install cross-compile deps (Linux → Windows)
+      - name: Install cross-compile deps (Linux -> Windows)
         if: matrix.target == 'x86_64-pc-windows-gnu'
         run: sudo apt-get install -y gcc-mingw-w64-x86-64
 
