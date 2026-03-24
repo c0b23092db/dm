@@ -27,6 +27,8 @@ enum Command {
     /// Check files in the download directory
     #[command(alias = "list", alias = "dir")]
     Ls,
+    /// Get Path of the download directory
+    Path,
 }
 
 fn main(){
@@ -41,6 +43,8 @@ fn main(){
     let args = Args::parse();
     if matches!(args.command, Some(Command::Ls)) { // `ls`,`list`,`dir`が指定された場合 //
         show_files_in_directory(download_path);
+    } else if matches!(args.command, Some(Command::Path)) { // `path`が指定された場合 //
+        println!("{}", download_path.display());
     } else if args.specify { // `-s`が指定された場合 //
         if let Some(index) = args.count {
             if 0 < index {

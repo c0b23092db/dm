@@ -10,7 +10,7 @@ dm.exe
 - [x] Windows 11(64bit)
 - [x] Linux
 
-### 非検証
+### 未検証
 - [ ] Mac
 
 ## インストール
