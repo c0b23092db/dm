@@ -43,8 +43,10 @@ Usage: dm.exe [OPTIONS] [count] [COMMAND]
 Commands:
   ls      Check files in the download directory
   remove  Remove files in the download directory
+  copy    Copy files in the download directory
   back    Move files in the download directory
   path    Get Path of the download directory
+  open    Open Download Directory
   help    Print this message or the help of the given subcommand(s)
 
 Arguments:
@@ -65,12 +67,16 @@ Options:
 ### SubCommands
 - `remove`, `rm`
   動作を「ファイルを削除する」に変える。
+- `copy`, `cp`
+  動作を「ファイルをコピーする」に変える。
+- `back`, `bk`
+  動作を「ファイルをカレントディレクトリからダウンロードディレクトリに移動する」に変える。
 - `ls`, `list`, `dir`
   ダウンロードディレクトリにあるファイルをリスト形式で出力する。
 - `path`
   ダウンロードディレクトリのパスを出力する。
-- `back`, `bk`
-  動作を「ファイルをカレントディレクトリからダウンロードディレクトリに移動する」に変える。
+- `open`
+  ダウンロードディレクトリを開く。
 
 ### Options
 - `-s`, `--specify`
@@ -126,6 +132,28 @@ dm rm -5
 dm rm -s 3
 ```
 
+### `dm copy`
+
+更新日付が新しいファイルを一つコピーする。
+```bash
+dm copy
+```
+
+更新日付が新しいファイルを三つコピーする。
+```bash
+dm cp 3
+```
+
+更新日付が古いファイルを五つコピーする。
+```bash
+dm cp -5
+```
+
+更新日付が新しい順で三番目のファイルをコピーする。
+```bash
+dm cp -s 3
+```
+
 ### `dm back`
 
 `README.md`をダウンロードディレクトリに移動する。
@@ -150,9 +178,11 @@ dm ls
 dm path
 ```
 
-## TODO
-- [x] open
-- [ ] copy
+### `dm open`
+ダウンロードディレクトリを開く。
+```bash
+dm open
+```
 
 ## 開発者
 - ikata

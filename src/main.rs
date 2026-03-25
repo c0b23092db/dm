@@ -3,6 +3,8 @@ use core::{
     show_files_in_directory,
     move_files,
     move_specified_file,
+    copy_files,
+    copy_specified_file,
     remove_files,
     remove_specified_file,
     back_specified_file,
@@ -40,11 +42,25 @@ enum Command {
         arg_required_else_help = false,
         allow_negative_numbers = true
     )]
-    Remove{
+    Remove {
         /// Number of files being removed
         #[arg(value_name = "count")]
         count:Option<i32>,
         /// Remove files at the specified number
+        #[arg(short, long)]
+        specify:bool,
+    },
+    /// Copy files in the download directory
+    #[command(
+        alias = "cp",
+        arg_required_else_help = false,
+        allow_negative_numbers = true
+    )]
+    Copy {
+        /// Number of files being copied
+        #[arg(value_name = "count")]
+        count:Option<i32>,
+        /// Copy files at the specified number
         #[arg(short, long)]
         specify:bool,
     },
@@ -82,6 +98,25 @@ fn main(){
                 eprintln!("Please specify file names to move with the back command");
             } else {
                 back_specified_file(current_dir, download_path, files);
+            }
+        },
+        Some(Command::Copy { count, specify }) => {
+            if specify {
+                if let Some(index) = count {
+                    if 0 < index {
+                        copy_specified_file(download_path, current_dir, index as usize);
+                    } else {
+                        eprintln!("Index must be a positive number");
+                    }
+                } else {
+                    eprintln!("Please specify a file number with -s option");
+                }
+            } else if count.is_none() { // `cp`が実行された場合 //
+                copy_files(download_path, current_dir, 1);
+            } else if count == Some(0) { // `cp 0`が実行された場合 //
+                copy_files(download_path, current_dir, 0);
+            } else if let Some(count) = count { // `cp 5`のように数値が指定された場合 //
+                copy_files(download_path, current_dir, count);
             }
         },
         Some(Command::Remove { count, specify }) => {

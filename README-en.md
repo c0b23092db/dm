@@ -43,8 +43,10 @@ Usage: dm.exe [OPTIONS] [count] [COMMAND]
 Commands:
   ls      Check files in the download directory
   remove  Remove files in the download directory
+  copy    Copy files in the download directory
   back    Move files in the download directory
   path    Get Path of the download directory
+  open    Open Download Directory
   help    Print this message or the help of the given subcommand(s)
 
 Arguments:
@@ -65,12 +67,16 @@ Options:
 ### Subcommands
 - `remove`, `rm`
   Switches behavior to removing files.
+- `copy`, `cp`
+  Switches behavior to copying files.
 - `ls`, `list`, `dir`
   Prints files in the Downloads directory in list format.
 - `path`
   Prints the Downloads directory path.
 - `back`, `bk`
   Switches behavior to moving files from the current directory back to the Downloads directory.
+- `open`
+  Opens the Downloads directory.
 
 ### Options
 - `-s`, `--specify`
@@ -126,6 +132,28 @@ Removes the 3rd file in newest-first order.
 dm rm -s 3
 ```
 
+### `dm copy`
+
+Copies the newest file.
+```bash
+dm copy
+```
+
+Copies the 3 newest files.
+```bash
+dm cp 3
+```
+
+Copies the 5 oldest files.
+```bash
+dm cp -5
+```
+
+Copies the 3rd file in newest-first order.
+```bash
+dm cp -s 3
+```
+
 ### `dm back`
 
 Moves `README.md` to the Downloads directory.
@@ -148,6 +176,12 @@ dm ls
 Prints the Downloads directory path.
 ```bash
 dm path
+```
+
+### `dm open`
+Opens the Downloads directory.
+```bash
+dm open
 ```
 
 ## Developer

@@ -1,4 +1,4 @@
-use std::fs::{read_dir,rename};
+use std::fs::{read_dir,rename,copy};
 use std::path::PathBuf;
 
 /// ディレクトリ内のファイルを一覧表示する関数
@@ -73,6 +73,41 @@ pub fn remove_specified_file(from: PathBuf, index: usize) {
     };
 }
 
+/// ファイルをコピーする関数
+pub fn copy_files(from: PathBuf, to: PathBuf, count: i32) {
+    let files = get_vecfiles_modified(from,0 <= count);
+    if files.is_empty() {
+        return;
+    }
+    let copy_count = if count == 0 { files.len() } else { count.unsigned_abs() as usize };
+    for file in files.into_iter().take(copy_count) {
+        let destination = to.join(file.file_name().expect("Failed to File name"));
+        copy(&file, &destination).unwrap_or_else(|err| {
+            eprintln!("Failed to copy {:?} : {}", file, err);
+            0
+        });
+    }
+}
+
+/// 指定した番号のファイルをコピーする関数
+pub fn copy_specified_file(from: PathBuf, to: PathBuf, index: usize) {
+    let files = get_vecfiles_modified(from, true);
+    if files.is_empty() {
+        return;
+    }
+    if index == 0 || files.len() < index {
+        eprintln!("Invalid index: {}. Valid range: 1-{}", index, files.len());
+        return;
+    }
+    let file = &files[index - 1];
+    let destination = to.join(file.file_name().expect("Failed to File name"));
+    copy(file, destination).unwrap_or_else(|err| {
+        eprintln!("Failed to copy {:?} : {}", file, err);
+        0
+    });
+}
+
+/// 指定したファイルをダウンロードディレクトリに戻す関数
 pub fn back_specified_file(from: PathBuf, to: PathBuf, files: Vec<String>) {
     for file in files {
         let file_path = from.join(&file);
