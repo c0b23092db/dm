@@ -77,6 +77,23 @@ enum Command {
     Open,
 }
 
+enum ExecutionMode {
+    ByIndex(usize),
+    ByCount(i32),
+}
+
+fn resolve_execution_mode(specify: bool, count: Option<i32>) -> Result<ExecutionMode, &'static str> {
+    if specify {
+        match count {
+            Some(index) if index > 0 => Ok(ExecutionMode::ByIndex(index as usize)),
+            Some(_) => Err("Index must be a positive number"),
+            None => Err("Please specify a file number with -s option"),
+        }
+    } else {
+        Ok(ExecutionMode::ByCount(count.unwrap_or(1)))
+    }
+}
+
 fn main(){
     let Ok(current_dir) = current_dir() else {
         eprintln!("Failed to get path of the Current Directory");
@@ -101,60 +118,24 @@ fn main(){
             }
         },
         Some(Command::Copy { count, specify }) => {
-            if specify {
-                if let Some(index) = count {
-                    if 0 < index {
-                        copy_specified_file(download_path, current_dir, index as usize);
-                    } else {
-                        eprintln!("Index must be a positive number");
-                    }
-                } else {
-                    eprintln!("Please specify a file number with -s option");
-                }
-            } else if count.is_none() { // `cp`が実行された場合 //
-                copy_files(download_path, current_dir, 1);
-            } else if count == Some(0) { // `cp 0`が実行された場合 //
-                copy_files(download_path, current_dir, 0);
-            } else if let Some(count) = count { // `cp 5`のように数値が指定された場合 //
-                copy_files(download_path, current_dir, count);
+            match resolve_execution_mode(specify, count) {
+                Ok(ExecutionMode::ByIndex(index)) => copy_specified_file(download_path, current_dir, index),
+                Ok(ExecutionMode::ByCount(count)) => copy_files(download_path, current_dir, count),
+                Err(message) => eprintln!("{}", message),
             }
         },
         Some(Command::Remove { count, specify }) => {
-            if specify {
-                if let Some(index) = count {
-                    if 0 < index {
-                        remove_specified_file(download_path, index as usize);
-                    } else {
-                        eprintln!("Index must be a positive number");
-                    }
-                } else {
-                    eprintln!("Please specify a file number with -s option");
-                }
-            } else if count.is_none() { // `rm`が実行された場合 //
-                remove_files(download_path,1);
-            } else if count == Some(0) { // `rm 0`が実行された場合 //
-                remove_files(download_path,0);
-            } else if let Some(count) = count { // `rm 5`のように数値が指定された場合 //
-                remove_files(download_path,count);
+            match resolve_execution_mode(specify, count) {
+                Ok(ExecutionMode::ByIndex(index)) => remove_specified_file(download_path, index),
+                Ok(ExecutionMode::ByCount(count)) => remove_files(download_path, count),
+                Err(message) => eprintln!("{}", message),
             }
         },
         None => {
-            if args.specify {
-                if let Some(index) = args.count {
-                    if 0 < index {
-                        move_specified_file(download_path, current_dir, index as usize);
-                    } else {
-                        eprintln!("Index must be a positive number");
-                    }
-                } else {
-                    eprintln!("Please specify a file number with -s option");
-                }
-            } else if args.count.is_none() { // `dm`が実行された場合 //
-                move_files(download_path,current_dir,1);
-            }  else if args.count == Some(0) { // `dm 0`が実行された場合 //
-                move_files(download_path,current_dir,0);
-            } else if let Some(count) = args.count { // `dm 5`のように数値が指定された場合 //
-                move_files(download_path,current_dir,count);
+            match resolve_execution_mode(args.specify, args.count) {
+                Ok(ExecutionMode::ByIndex(index)) => move_specified_file(download_path, current_dir, index),
+                Ok(ExecutionMode::ByCount(count)) => move_files(download_path, current_dir, count),
+                Err(message) => eprintln!("{}", message),
             }
         },
     };
