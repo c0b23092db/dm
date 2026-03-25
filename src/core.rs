@@ -73,6 +73,20 @@ pub fn remove_specified_file(from: PathBuf, index: usize) {
     };
 }
 
+// TODO: 指定したファイルをダウンロードディレクトリに移動する関数
+pub fn back_specified_file(from: PathBuf, to: PathBuf, files: Vec<String>) {
+    for file in files {
+        let file_path = from.join(&file);
+        if !file_path.exists() {
+            eprintln!("File not found: {}", file);
+            continue;
+        }
+        rename(&file_path, to.join(file)).unwrap_or_else(|err| {
+            eprintln!("Failed to move {:?} : {}", file_path, err);
+        });
+    }
+}
+
 /// ファイルを更新順に取得する関数
 fn get_vecfiles_modified(directory_path:PathBuf, reverse_modified:bool) -> Vec<PathBuf> {
     let mut files:Vec<PathBuf> = match read_dir(&directory_path) {

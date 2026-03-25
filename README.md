@@ -41,6 +41,7 @@ Usage: dm.exe [OPTIONS] [count] [COMMAND]
 Commands:
   ls      Check files in the download directory
   remove  Remove files in the download directory
+  back    Move files in the download directory
   path    Get Path of the download directory
   help    Print this message or the help of the given subcommand(s)
 
@@ -66,6 +67,8 @@ Options:
   ダウンロードディレクトリにあるファイルをリスト形式で出力する。
 - `path`
   ダウンロードディレクトリのパスを出力する。
+- `back`, `bk`
+  動作を「ファイルをカレントディレクトリからダウンロードディレクトリに移動する」に変える。
 
 ### Options
 - `-s`, `--specify`
@@ -103,7 +106,7 @@ dm -s 3
 
 更新日付が新しいファイルを一つ削除する。
 ```bash
-dm rm
+dm remove
 ```
 
 更新日付が新しいファイルを三つ削除する。
@@ -119,6 +122,18 @@ dm rm -5
 更新日付が新しい順で三番目のファイルを削除する。
 ```bash
 dm rm -s 3
+```
+
+### `dm back`
+
+`README.md`をダウンロードディレクトリに移動する。
+```bash
+dm back README.md
+```
+
+`README.md`と`Cargo.toml`をダウンロードディレクトリに移動する。
+```bash
+dm bk README.md Cargo.toml
 ```
 
 ### `dm ls`
