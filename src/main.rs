@@ -1,5 +1,12 @@
 mod core;
-use core::{show_files_in_directory,move_files,move_specified_file,remove_files,remove_specified_file,back_specified_file};
+use core::{
+    show_files_in_directory,
+    move_files,
+    move_specified_file,
+    remove_files,
+    remove_specified_file,
+    back_specified_file,
+};
 
 use std::env::current_dir;
 use clap::{Parser, Subcommand};
@@ -50,6 +57,8 @@ enum Command {
     },
     /// Get Path of the download directory
     Path,
+    /// Open Download Directory
+    Open,
 }
 
 fn main(){
@@ -65,6 +74,9 @@ fn main(){
     match args.command {
         Some(Command::Ls) => show_files_in_directory(download_path),
         Some(Command::Path) => println!("{}", download_path.display()),
+        Some(Command::Open) => if let Err(err) = open::that(&download_path) {
+            eprintln!("Failed to open download directory: {}", err);
+        },
         Some(Command::Back { files }) => {
             if files.is_empty() {
                 eprintln!("Please specify file names to move with the back command");

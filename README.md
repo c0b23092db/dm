@@ -150,6 +150,10 @@ dm ls
 dm path
 ```
 
+## TODO
+- [x] open
+- [ ] copy
+
 ## 開発者
 - ikata
 
