@@ -4,6 +4,8 @@ dm.exe
 ```
 **CLI: moves files and folders from your Downloads directory to the current directory.**
 
+- [Japanese](README.md)
+
 ## Environment
 
 ### Tested
