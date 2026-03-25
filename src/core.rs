@@ -73,7 +73,6 @@ pub fn remove_specified_file(from: PathBuf, index: usize) {
     };
 }
 
-// TODO: 指定したファイルをダウンロードディレクトリに移動する関数
 pub fn back_specified_file(from: PathBuf, to: PathBuf, files: Vec<String>) {
     for file in files {
         let file_path = from.join(&file);
