@@ -1,5 +1,5 @@
 use std::fs::{read_dir,rename,copy};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 /// ディレクトリ内のファイルを一覧表示する関数
 pub fn show_files_in_directory(directory_path:PathBuf) {
@@ -16,9 +16,7 @@ pub fn show_files_in_directory(directory_path:PathBuf) {
 /// ファイルを移動する関数
 pub fn move_files(from: PathBuf,to: PathBuf, count: i32) {
     for file in take_target_files(from, count) {
-        rename(&file, to.join(file.file_name().expect("Failed to File name"))).unwrap_or_else(|err| {
-            eprintln!("Failed to move {:?} : {}", file, err);
-        });
+        move_file(&to,&file);
     }
 }
 
@@ -27,9 +25,12 @@ pub fn move_specified_file(from: PathBuf, to: PathBuf, index: usize) {
     let Some(file) = get_file_by_index(from, index) else {
         return;
     };
-    rename(&file, to.join(file.file_name().expect("Failed to File name"))).unwrap_or_else(|err| {
-        eprintln!("Failed to move {:?} : {}", file, err);
-    });
+    move_file(&to,&file);
+}
+
+fn move_file(to:&Path, file: &Path){
+    rename(file, to.join(file.file_name().expect("Failed to File name")))
+        .unwrap_or_else(|err| eprintln!("Failed to move {:?} : {}", file, err));
 }
 
 /// ファイルを削除する関数
